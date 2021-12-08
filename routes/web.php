@@ -13,10 +13,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::prefix('admin')->group(function () {
+    
+    Route::get('login', [Backend\Auth\LoginController::class,'showLoginForm'])->name('login');
+    Route::post('login', [Backend\Auth\LoginController::class,'login']);
+    Route::post('logout', [Backend\Auth\LoginController::class,'logout'])->name('logout');
+    Route::get('register', [Backend\Auth\RegisterController::class,'showRegistrationForm'])->name('register');
+    Route::post('register', [Backend\Auth\RegisterController::class,'register']);
+    
 });
 
-Auth::routes();
+Route::prefix('user')->group(function () {
+    
+    Route::get('login', [Frontend\Auth\LoginController::class,'showLoginForm'])->name('login');
+    Route::post('login', [Frontend\Auth\LoginController::class,'login']);
+    Route::post('logout', [Frontend\Auth\LoginController::class,'logout'])->name('logout');
+    Route::get('register', [Frontend\Auth\RegisterController::class,'showRegistrationForm'])->name('register');
+    Route::post('register', [Frontend\Auth\RegisterController::class,'register']);
+    
+});
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+Route::get('/{any}', [App\Http\Controllers\HomeController::class, 'index'])->where('any','.*');

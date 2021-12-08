@@ -32,10 +32,48 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function register()
+    // public function register()
+    // {
+    //     $this->reportable(function (Throwable $e) {
+    //         //
+    //     });
+    // }
+
+    public function report(Exception $exception)
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        parent::report($exception);
+    }
+
+    public function render($request, Exception $exception)
+    {
+        return parent::render($request, $exception);
+    }
+
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        $guard = Arr::get($exception->guards(), 0);
+
+       switch ($guard) {
+        case 'admin':
+           $login='admin.login';
+           break;
+        case 'masjid':
+            $login='masjid.login';
+            break;
+
+        case 'serviceprovider':
+                $login='masjid.login';
+                break;
+        default:
+           $login='login';
+           break;
+       }
+
+        return redirect()->guest(route($login));
     }
 }
