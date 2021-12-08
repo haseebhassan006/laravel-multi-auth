@@ -17,3 +17,24 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('admin')->group(function(){
+
+    Route::prefix('product')->group(function(){
+        Route::get('/',[ProductController::class, 'index']);
+        Route::get('/{id}',[ProductController::class, 'show']);
+        Route::post('/store',[ProductController::class, 'store']);
+        Route::post('/update/{id}',[ProductController::class, 'update']);
+        Route::post('/delete/{id}',[ProductController::class, 'delete']);
+    });
+
+    
+    Route::prefix('category')->group(function(){
+        Route::get('/',[CategoryController::class, 'index']);
+        Route::get('/{id}',[CategoryController::class, 'show']);
+        Route::post('/store',[CategoryController::class, 'store']);
+        Route::post('/update/{id}',[CategoryController::class, 'update']);
+        Route::post('/delete/{id}',[CategoryController::class, 'delete']);
+    });
+    
+});
